@@ -1,25 +1,23 @@
-import logo from './logo.svg';
-import './App.css';
+import logo from "./logo.svg";
+import { BrowserRouter, Navigate, useRoutes } from "react-router-dom";
+import "bootstrap/dist/css/bootstrap.min.css";
+import "bootstrap/dist/js/bootstrap.bundle.min";
+import "./App.css";
+import Home from "./Components/Home";
+import Login from "./auth/Login";
+import Signup from "./auth/Signup";
 
 function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
+  const user = JSON.parse(localStorage.getItem("userDetails"));
+  const AfterLoginRoutes = () => useRoutes([
+    { path: "/", element: <Home /> },
+    { path: "*", element: <Navigate to="/" replace /> },
+  ]);
+  const BeforeLoginRoutes = () => useRoutes([
+    { path: "/login", element: <Login /> },
+    { path: "/", element: <Signup /> },
+  ]);
+  return <BrowserRouter>{user ? <AfterLoginRoutes /> : <BeforeLoginRoutes />}</BrowserRouter>;
 }
 
 export default App;
