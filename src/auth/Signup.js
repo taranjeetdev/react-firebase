@@ -1,5 +1,9 @@
 import React, { useState } from 'react'
-import { Link } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
+import { user_signup } from '../Database/firebasefunctions';
+import { doc, setDoc } from 'firebase/firestore';
+import { db } from '../Database/firebase';
+import { toast } from 'react-toastify';
 
 const Signup = () => {
     const [formdata, setFormdata] = useState({
@@ -17,6 +21,8 @@ const Signup = () => {
         bio: ''
     });
     let emailregex = /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/;
+    const navigate = useNavigate();
+
     const handleChange = (e) => {
         const { name, value } = e.target;
         switch (name) {
@@ -46,21 +52,40 @@ const Signup = () => {
                 break;
         }
     };
-    const handleSubmit = (e) => {
+
+    const handleSubmit = async (e) => {
         e.preventDefault();
-        const {username, email, password, confirmpassword, bio} = formdata;
+        const { username, email, password, confirmpassword, bio } = formdata;
         setErrors({
-            username: !username ? 'Username is required': null,
+            username: !username ? 'Username is required' : null,
             email: !email ? "Email is required" : null,
             password: !password ? "Password is required" : null,
             confirmpassword: !confirmpassword ? 'Confirm Password is required' : null,
             bio: !bio ? 'Bio is required' : null
         });
-        if(username && email && password && confirmpassword && bio){
-            localStorage.setItem('userDetails',JSON.stringify(formdata));
-            console.log("Data to be submit", formdata);
+
+        if (username && email && password && confirmpassword && bio) {
+            try {
+                let getdata = await user_signup(formdata);
+                let docref = doc(db, 'users', getdata.uid);
+                const userdata = {
+                    _id: getdata.uid,
+                    username: username,
+                    email: email,
+                    bio: bio,
+                    accessToken: getdata.accessToken
+                };
+                await setDoc(docref, userdata);
+                toast.success("Account Created Successfully");
+                localStorage.setItem('userDetails', JSON.stringify(userdata));
+                window.location.reload();
+            } catch (error) {
+                toast.error("Error creating account: " + error.message);
+            }
         }
     };
+
+
     return (
         <div className='container'>
             <div className='row justify-content-center'>
