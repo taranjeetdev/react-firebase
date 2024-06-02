@@ -21,6 +21,7 @@ function App() {
   const BeforeLoginRoutes = () => useRoutes([
     { path: "/login", element: <Login /> },
     { path: "/", element: <Signup /> },
+    { path: "*", element: <Navigate to="/" replace /> }
   ]);
   return <BrowserRouter>
     <ToastContainer />

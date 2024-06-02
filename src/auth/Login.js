@@ -1,10 +1,7 @@
 import React, { useState } from 'react'
 import { Link } from 'react-router-dom'
 import GoogleIcon from '../Images/7123025_logo_google_g_icon.svg'
-import { signInWithEmailAndPassword } from 'firebase/auth';
-import { auth } from '../Database/firebase';
-import { toast } from 'react-toastify';
-import { get_user_details } from '../Database/firebasefunctions';
+import { user_login } from '../Database/firebasefunctions';
 
 const Login = () => {
     const [formdata, setFormdata] = useState({
@@ -43,16 +40,7 @@ const Login = () => {
             password: !password ? "Password is required" : ""
         });
         if (emailregex.test(email) && password) {
-            let userlogin = await signInWithEmailAndPassword(auth, formdata?.email, formdata?.password);
-            const userdata = {
-                _id: userlogin.user.uid,
-                email: userlogin.email,
-                accessToken: userlogin.user.accessToken
-            };
-            let userdetail = await get_user_details(userlogin.user.uid);
-            localStorage.setItem('userDetails', JSON.stringify(userdetail));
-            window.location.reload();
-            toast.success("Login Sucessfully");
+            await user_login(formdata);
         }
     };
 

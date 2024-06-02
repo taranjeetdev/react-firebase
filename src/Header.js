@@ -17,12 +17,11 @@ const Header = () => {
                 </Navbar.Brand>
                 <Nav className="me-auto">
                     <Link to="/" className="text-decoration-none fs-4 me-3 text-dark">Home</Link>
-                    <Link to="/settings" className="text-decoration-none fs-4 me-3 text-dark">Settings</Link>
                 </Nav>
                 <Nav className="ms-auto">
-                    <NavDropdown className="fs-4" 
-                    title={`${user?.username ? user?.username : "....."}`} 
-                    id="collasible-nav-dropdown">
+                    <NavDropdown className="fs-4" title={`${user?.username ? user?.username : "....."}`} id="collasible-nav-dropdown">
+                        <NavDropdown.Item>Profile</NavDropdown.Item>
+                        <NavDropdown.Item href="/settings">Settings</NavDropdown.Item>
                         <NavDropdown.Item href="#logout" onClick={handleLogout}>Logout</NavDropdown.Item>
                     </NavDropdown>
                 </Nav>
