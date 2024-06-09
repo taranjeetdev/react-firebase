@@ -10,11 +10,16 @@ import Signup from "./auth/Signup";
 import Header from "./Header";
 import Setting from "./Setting";
 import { ToastContainer } from "react-toastify";
+import SideBar from "./SideBar";
+import UserProfile from "./Components/UserProfile";
+import ChatHome from "./Components/Chats/ChatHome";
 
 function App() {
   const user = JSON.parse(localStorage.getItem("userDetails"));
   const AfterLoginRoutes = () => useRoutes([
     { path: "/", element: <Home /> },
+    { path: "/chats", element: <ChatHome/> },
+    { path: "/profile", element: <UserProfile /> },
     { path: "/settings", element: <Setting /> },
     { path: "*", element: <Navigate to="/" replace /> },
   ]);
@@ -28,7 +33,16 @@ function App() {
     {user ?
       <div>
         <Header />
-        <AfterLoginRoutes />
+        <div className="container-fluid">
+          <div className="row">
+            <div className="col-2 col-md-2 col-lg-2 p-0">
+              <SideBar />
+            </div>
+            <div className="col-10 col-md-10 col-lg-10">
+              <AfterLoginRoutes />
+            </div>
+          </div>
+        </div>
       </div>
       : <BeforeLoginRoutes />
     }
