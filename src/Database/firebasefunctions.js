@@ -23,8 +23,8 @@ export const user_login = async (formdata) => {
         if (userlogin) {
             let userdetail = await get_user_details(userlogin.user.uid);
             localStorage.setItem('userDetails', JSON.stringify(userdetail));
-            toast.success("Login Sucessfully");
             window.location.reload();
+            toast.success("Login Sucessfully");
         }
     } catch (error) {
         toast.error(error.message);
