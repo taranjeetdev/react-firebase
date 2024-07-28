@@ -24,8 +24,8 @@ function App() {
     { path: "*", element: <Navigate to="/" replace /> },
   ]);
   const BeforeLoginRoutes = () => useRoutes([
-    { path: "/login", element: <Login /> },
-    { path: "/", element: <Signup /> },
+    { path: "/", element: <Login /> },
+    { path: "/signup", element: <Signup /> },
     { path: "*", element: <Navigate to="/" replace /> }
   ]);
   return <BrowserRouter>
