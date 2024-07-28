@@ -1,7 +1,11 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
 import GoogleIcon from '../Images/7123025_logo_google_g_icon.svg'
 import { user_login } from '../Database/firebasefunctions';
+import { toast } from 'react-toastify';
+import { signInWithPopup, signInWithRedirect } from 'firebase/auth';
+import { auth, db, provider } from '../Database/firebase';
+import { doc, getDoc, setDoc } from 'firebase/firestore';
 
 const Login = () => {
     const [formdata, setFormdata] = useState({
@@ -13,6 +17,20 @@ const Login = () => {
         password: ''
     });
     let emailregex = /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/;
+
+    const [width,setWidth] =  useState(window.innerWidth);
+    const handleSize = () => {
+        setWidth(window.innerWidth);
+    };
+
+    useEffect(() => {
+        window.addEventListener("resize",handleSize);
+        return () => {
+            window.addEventListener("resize",handleSize);
+        }
+    },[]);
+
+    const isMobile = width <= 917;
 
     const handleChange = (e) => {
         const { name, value } = e.target;
@@ -44,6 +62,34 @@ const Login = () => {
         }
     };
 
+    const handleGoogleLogin = async () => {
+        try {
+            const result = isMobile ? await signInWithRedirect(auth,provider) : await signInWithPopup(auth, provider);
+            console.log(result);
+            const userRef = doc(db, 'users', result?.user?.uid);
+            const isdata = await getDoc(userRef);
+            const userdata = {
+                _id: result?.user?.uid,
+                username: result?.user?.displayName,
+                email: result?.user?.email,
+                bio: '',
+                accessToken: result?.user?.accessToken
+            }
+            if (!isdata.exists()) {
+                await setDoc(userRef, userdata);
+                toast.success("Login Successfully");
+                localStorage.setItem('userDetails', JSON.stringify(userdata));
+                window.location.reload();
+            } else if (isdata.exists()) {
+                toast.success("Login Successfully");
+                localStorage.setItem('userDetails', JSON.stringify(userdata));
+                window.location.reload();
+            }
+        } catch (error) {
+            toast.error(error);
+        }
+    };
+
     return (
         <div className='container'>
             <div className='row justify-content-center'>
@@ -60,13 +106,13 @@ const Login = () => {
                         {errors?.password && <span className='text-danger'>{errors?.password}</span>}
                     </div>
                     <button type='submit' className='btn btn-primary mt-2'>Login</button>
-                    <span className='mt-2'>Doesn't have an account? <Link to='/' className='text-decoration-none' >Sign up</Link></span>
+                    <span className='mt-2'>Doesn't have an account? <Link to='/signup' className='text-decoration-none' >Sign up</Link></span>
                 </form>
             </div>
             <div>
                 <p>or</p>
                 <div>
-                    <button className='btn btn-light'><img src={GoogleIcon} height={24} /> Login with Google</button>
+                    <button className='btn btn-light' onClick={handleGoogleLogin}><img src={GoogleIcon} height={24} /> Login with Google</button>
                 </div>
             </div>
         </div>

@@ -3,6 +3,15 @@ import { db, auth } from "./firebase";
 import { doc, getDoc } from 'firebase/firestore';
 import { toast } from "react-toastify";
 
+export const catch_error_handler = (error) => {
+    if(error.message == "Firebase: Error (auth/network-request-failed)."){
+        toast.error("Network Error");
+    }else if(error.message == "Firebase: Error (auth/invalid-credential)."){
+        toast.error("Invalid Credentials");
+    }else{
+        toast.error(error.message);
+    }
+};
 
 export const user_signup = async (userdata) => {
     let usercredentials = await createUserWithEmailAndPassword(auth, userdata.email, userdata.password);
@@ -27,7 +36,7 @@ export const user_login = async (formdata) => {
             toast.success("Login Sucessfully");
         }
     } catch (error) {
-        toast.error(error.message);
+        catch_error_handler(error);
     }
 };
 
