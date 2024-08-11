@@ -13,9 +13,11 @@ import { ToastContainer } from "react-toastify";
 import SideBar from "./SideBar";
 import UserProfile from "./Components/UserProfile";
 import ChatHome from "./Components/Chats/ChatHome";
+import { useSelector } from "react-redux";
 
 function App() {
-  const user = JSON.parse(localStorage.getItem("userDetails"));
+  // const user = JSON.parse(localStorage.getItem("userDetails"));
+  const user = useSelector((state) => state.auth.user);
   const AfterLoginRoutes = () => useRoutes([
     { path: "/", element: <Home /> },
     { path: "/chats", element: <ChatHome/> },
