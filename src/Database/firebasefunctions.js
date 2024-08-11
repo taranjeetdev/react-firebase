@@ -2,6 +2,7 @@ import { createUserWithEmailAndPassword, signInWithEmailAndPassword } from "fire
 import { db, auth } from "./firebase";
 import { doc, getDoc } from 'firebase/firestore';
 import { toast } from "react-toastify";
+import { start_loading, stop_loading } from "../reduxData/Loader/loaderSlice";
 
 export const catch_error_handler = (error) => {
     if(error.message == "Firebase: Error (auth/network-request-failed)."){
@@ -26,7 +27,8 @@ export const get_user_details = async (id) => {
     }
 };
 
-export const user_login = async (formdata) => {
+export const user_login = async (formdata,dispatch) => {
+    dispatch(start_loading());
     try {
         let userlogin = await signInWithEmailAndPassword(auth, formdata?.email, formdata?.password);
         if (userlogin) {
@@ -37,6 +39,8 @@ export const user_login = async (formdata) => {
         }
     } catch (error) {
         catch_error_handler(error);
+    } finally {
+        dispatch(stop_loading());
     }
 };
 

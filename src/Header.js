@@ -2,12 +2,24 @@ import React, { useEffect } from "react";
 import { Container, Nav, NavDropdown, Navbar } from "react-bootstrap";
 import { Link } from "react-router-dom";
 import ChatLogo from './Images/iconchat.png'
+import { logout } from "./reduxData/User/userSlice";
+import { catch_error_handler } from "./Database/firebasefunctions";
+import { useDispatch, useSelector } from "react-redux";
+import { start_loading, stop_loading } from "./reduxData/Loader/loaderSlice";
 
 const Header = () => {
-    const user = JSON.parse(localStorage.getItem("userDetails"));
+    const user = useSelector((state) => state.auth.user);
+    const dispatch = useDispatch();
     const handleLogout = () => {
-        localStorage.clear();
-        window.location.reload();
+        dispatch(start_loading());
+        try {
+            localStorage.clear();
+            dispatch(logout());
+        } catch (error) {
+            catch_error_handler(error);
+        } finally {
+            dispatch(stop_loading());
+        }
     };
 
     return (

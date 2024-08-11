@@ -6,6 +6,8 @@ import { toast } from 'react-toastify';
 import { signInWithPopup, signInWithRedirect } from 'firebase/auth';
 import { auth, db, provider } from '../Database/firebase';
 import { doc, getDoc, setDoc } from 'firebase/firestore';
+import { login } from '../reduxData/User/userSlice';
+import { useDispatch } from 'react-redux';
 
 const Login = () => {
     const [formdata, setFormdata] = useState({
@@ -16,6 +18,7 @@ const Login = () => {
         email: '',
         password: ''
     });
+    const dispatch = useDispatch();
     let emailregex = /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/;
 
     const [width,setWidth] =  useState(window.innerWidth);
@@ -58,7 +61,7 @@ const Login = () => {
             password: !password ? "Password is required" : ""
         });
         if (emailregex.test(email) && password) {
-            await user_login(formdata);
+            await user_login(formdata,dispatch);
         }
     };
 
@@ -78,12 +81,14 @@ const Login = () => {
             if (!isdata.exists()) {
                 await setDoc(userRef, userdata);
                 toast.success("Login Successfully");
-                localStorage.setItem('userDetails', JSON.stringify(userdata));
-                window.location.reload();
+                login(userdata);
+                // localStorage.setItem('userDetails', JSON.stringify(userdata));
+                // window.location.reload();
             } else if (isdata.exists()) {
                 toast.success("Login Successfully");
-                localStorage.setItem('userDetails', JSON.stringify(userdata));
-                window.location.reload();
+                login(userdata);
+                // localStorage.setItem('userDetails', JSON.stringify(userdata));
+                // window.location.reload();
             }
         } catch (error) {
             toast.error(error);
