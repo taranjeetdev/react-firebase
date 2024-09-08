@@ -117,7 +117,7 @@ const Signup = () => {
                         {errors?.bio && <span className='text-danger'>{errors?.bio}</span>}
                     </div>
                     <button type='submit' className='btn btn-primary mt-2'>Sign up</button>
-                    <span className='mt-4'>Already have an account! <Link to='/' className='text-decoration-none' >Login</Link></span>
+                    <span className='mt-4'>Already have an account! <Link to='/login' className='text-decoration-none' >Login</Link></span>
                 </form>
             </div>
         </div>

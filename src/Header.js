@@ -13,7 +13,6 @@ const Header = () => {
     const handleLogout = () => {
         dispatch(start_loading());
         try {
-            localStorage.clear();
             dispatch(logout());
         } catch (error) {
             catch_error_handler(error);
@@ -23,24 +22,26 @@ const Header = () => {
     };
 
     return (
-        <Navbar className="d-flex">
-            <Container>
-                <Navbar.Brand>
-                    <Link to="/" className="text-decoration-none fs-4">
-                        <img src={ChatLogo} alt="not found" />
-                    </Link>
-                </Navbar.Brand>
-                {/* <Nav className="me-auto">
+        <div className="header-top">
+            <Navbar className="d-flex">
+                <Container>
+                    <Navbar.Brand>
+                        <Link to="/" className="text-decoration-none fs-4">
+                            <img src={ChatLogo} alt="not found" />
+                        </Link>
+                    </Navbar.Brand>
+                    {/* <Nav className="me-auto">
                     <Link to="/" className="text-decoration-none fs-4 me-3 text-dark">Home</Link>
                 </Nav> */}
-                <Nav className="ms-auto">
-                    <NavDropdown className="fs-4" title={`${user?.username ? user?.username : "....."}`} id="collasible-nav-dropdown">
-                        <NavDropdown.Item href="/settings">Settings</NavDropdown.Item>
-                        <NavDropdown.Item href="#logout" onClick={handleLogout}>Logout</NavDropdown.Item>
-                    </NavDropdown>
-                </Nav>
-            </Container>
-        </Navbar>
+                    <Nav className="ms-auto">
+                        <NavDropdown className="fs-4" title={`${user?.username ? user?.username : "....."}`} id="collasible-nav-dropdown">
+                            <NavDropdown.Item href="/settings">Settings</NavDropdown.Item>
+                            <NavDropdown.Item href="#logout" onClick={handleLogout}>Logout</NavDropdown.Item>
+                        </NavDropdown>
+                    </Nav>
+                </Container>
+            </Navbar>
+        </div>
     )
 }
 

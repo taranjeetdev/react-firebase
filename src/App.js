@@ -4,6 +4,7 @@ import "bootstrap/dist/css/bootstrap.min.css";
 import "bootstrap/dist/js/bootstrap.bundle.min";
 import 'react-toastify/dist/ReactToastify.css';
 import "./App.css";
+import './index.css';
 import Home from "./Components/Home";
 import Login from "./auth/Login";
 import Signup from "./auth/Signup";
@@ -14,24 +15,28 @@ import SideBar from "./SideBar";
 import UserProfile from "./Components/UserProfile";
 import ChatHome from "./Components/Chats/ChatHome";
 import { useSelector } from "react-redux";
+import LoadingSpinner from "./LoadingSpinner";
 
 function App() {
-  // const user = JSON.parse(localStorage.getItem("userDetails"));
   const user = useSelector((state) => state.auth.user);
+
   const AfterLoginRoutes = () => useRoutes([
-    { path: "/", element: <Home /> },
-    { path: "/chats", element: <ChatHome/> },
+    { path: "/", element: <ChatHome/> },
     { path: "/profile", element: <UserProfile /> },
     { path: "/settings", element: <Setting /> },
     { path: "*", element: <Navigate to="/" replace /> },
   ]);
+  
   const BeforeLoginRoutes = () => useRoutes([
-    { path: "/", element: <Login /> },
+    { path: "/", element: <Home /> },
+    { path: "/login", element: <Login /> },
     { path: "/signup", element: <Signup /> },
     { path: "*", element: <Navigate to="/" replace /> }
   ]);
+
   return <BrowserRouter>
     <ToastContainer />
+    <LoadingSpinner />
     {user ?
       <div>
         <Header />
@@ -40,7 +45,7 @@ function App() {
             <div className="col-2 col-md-2 col-lg-2 p-0">
               <SideBar />
             </div>
-            <div className="col-10 col-md-10 col-lg-10">
+            <div className="col-10 col-md-10 col-lg-10 main-content">
               <AfterLoginRoutes />
             </div>
           </div>

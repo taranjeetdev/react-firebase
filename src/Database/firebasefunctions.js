@@ -3,6 +3,7 @@ import { db, auth } from "./firebase";
 import { doc, getDoc } from 'firebase/firestore';
 import { toast } from "react-toastify";
 import { start_loading, stop_loading } from "../reduxData/Loader/loaderSlice";
+import { login } from "../reduxData/User/userSlice";
 
 export const catch_error_handler = (error) => {
     if(error.message == "Firebase: Error (auth/network-request-failed)."){
@@ -33,9 +34,8 @@ export const user_login = async (formdata,dispatch) => {
         let userlogin = await signInWithEmailAndPassword(auth, formdata?.email, formdata?.password);
         if (userlogin) {
             let userdetail = await get_user_details(userlogin.user.uid);
-            localStorage.setItem('userDetails', JSON.stringify(userdetail));
-            window.location.reload();
-            toast.success("Login Sucessfully");
+             dispatch(login(userdetail));
+            toast.success("Login Successfully", {toastId: "usrrlogined", autoClose: 2000 });
         }
     } catch (error) {
         catch_error_handler(error);
