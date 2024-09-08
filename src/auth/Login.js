@@ -7,7 +7,8 @@ import { signInWithPopup, signInWithRedirect } from 'firebase/auth';
 import { auth, db, provider } from '../Database/firebase';
 import { doc, getDoc, setDoc } from 'firebase/firestore';
 import { login } from '../reduxData/User/userSlice';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
+import Imglogo from '../Images/speech-bubble.png';
 
 const Login = () => {
     const [formdata, setFormdata] = useState({
@@ -18,20 +19,21 @@ const Login = () => {
         email: '',
         password: ''
     });
+    const isLoader = useSelector((state) => state.loader.isLoading);
     const dispatch = useDispatch();
     let emailregex = /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/;
 
-    const [width,setWidth] =  useState(window.innerWidth);
+    const [width, setWidth] = useState(window.innerWidth);
     const handleSize = () => {
         setWidth(window.innerWidth);
     };
 
     useEffect(() => {
-        window.addEventListener("resize",handleSize);
+        window.addEventListener("resize", handleSize);
         return () => {
-            window.addEventListener("resize",handleSize);
+            window.addEventListener("resize", handleSize);
         }
-    },[]);
+    }, []);
 
     const isMobile = width <= 917;
 
@@ -61,13 +63,14 @@ const Login = () => {
             password: !password ? "Password is required" : ""
         });
         if (emailregex.test(email) && password) {
-            await user_login(formdata,dispatch);
+            await user_login(formdata, dispatch);
         }
     };
 
     const handleGoogleLogin = async () => {
         try {
-            const result = isMobile ? await signInWithRedirect(auth,provider) : await signInWithPopup(auth, provider);
+            // const result = isMobile ? await signInWithRedirect(auth,provider) : await signInWithPopup(auth, provider);
+            const result = await signInWithPopup(auth, provider);
             console.log(result);
             const userRef = doc(db, 'users', result?.user?.uid);
             const isdata = await getDoc(userRef);
@@ -80,15 +83,11 @@ const Login = () => {
             }
             if (!isdata.exists()) {
                 await setDoc(userRef, userdata);
-                toast.success("Login Successfully");
-                login(userdata);
-                // localStorage.setItem('userDetails', JSON.stringify(userdata));
-                // window.location.reload();
+                dispatch(login(userdata));
+                toast.success("Login Successfully", { toastId: "lgoinndd", autoClose: 1000 });
             } else if (isdata.exists()) {
-                toast.success("Login Successfully");
-                login(userdata);
-                // localStorage.setItem('userDetails', JSON.stringify(userdata));
-                // window.location.reload();
+                dispatch(login(userdata));
+                toast.success("Login Successfully", { toastId: "lofigbd", autoClose: 1000 });
             }
         } catch (error) {
             toast.error(error);
@@ -96,28 +95,54 @@ const Login = () => {
     };
 
     return (
-        <div className='container'>
-            <div className='row justify-content-center'>
-                <h1>Login</h1>
-                <form onSubmit={handleSubmit}>
-                    <div className='form-group col-md-6'>
-                        <label>Email<span className='text-danger'>*</span> </label>
-                        <input type='text' className='form-control' name='email' value={formdata?.email} onChange={handleChange} />
-                        {errors?.email && <span className='text-danger'>{errors?.email}</span>}
-                    </div>
-                    <div className='form-group col-md-6'>
-                        <label>Password<span className='text-danger'>*</span> </label>
-                        <input type='text' className='form-control' name='password' value={formdata?.password} onChange={handleChange} />
-                        {errors?.password && <span className='text-danger'>{errors?.password}</span>}
-                    </div>
-                    <button type='submit' className='btn btn-primary mt-2'>Login</button>
-                    <span className='mt-2'>Doesn't have an account? <Link to='/signup' className='text-decoration-none' >Sign up</Link></span>
-                </form>
+        <div className='login-page d-flex flex-column justify-content-center align-items-center position-relative'>
+            <div className='position-absolute' style={{ top: '30px', left: '30px' }}>
+                <img
+                    src={Imglogo}
+                    height={30}
+                    alt='img not found'
+                /> <span className='login-text'>Web Chat</span>
             </div>
-            <div>
-                <p>or</p>
-                <div>
-                    <button className='btn btn-light' onClick={handleGoogleLogin}><img src={GoogleIcon} height={24} /> Login with Google</button>
+
+            <div className='row justify-content-center w-100'>
+                <div className='login-part col-lg-6 col-md-6'>
+                    <span className='d-block text-center login-heading'>Login in to continue to Web Chat.</span>
+                    <div className='d-flex justify-content-center'>
+                        <form onSubmit={handleSubmit}>
+                            <div className='form-group col-12'>
+                                <label className='input-labels'>Email</label>
+                                <input
+                                    type='text'
+                                    className='form-control input-fields'
+                                    name='email'
+                                    value={formdata?.email}
+                                    onChange={handleChange}
+                                />
+                                {errors?.email && <span className='text-danger'>{errors?.email}</span>}
+                            </div>
+                            <div className='form-group col-12'>
+                                <label className='input-labels'>Password</label>
+                                <input
+                                    type='text'
+                                    className='form-control'
+                                    name='password'
+                                    value={formdata?.password}
+                                    onChange={handleChange}
+                                />
+                                {errors?.password && <span className='text-danger'>{errors?.password}</span>}
+                            </div>
+                            <button type='submit' className='btn btn-info w-100 mt-2'>
+                                Login
+                            </button>
+                            <div className='text-center'>
+                                <p className='pt-2 input-labels'>or</p>
+                                <div>
+                                    <button className='btn btn-light' onClick={handleGoogleLogin}><img src={GoogleIcon} height={24} /> Login with Google</button>
+                                </div>
+                            </div>
+                            <span className='d-block text-center mt-2 input-labels'>Don't have an account? <Link to='/signup' className='text-decoration-none' >Register</Link></span>
+                        </form>
+                    </div>
                 </div>
             </div>
         </div>
