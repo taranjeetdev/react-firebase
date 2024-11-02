@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useState } from 'react'
 import { BiChat, BiLogOut, BiPlus } from 'react-icons/bi';
 import { CgProfile } from 'react-icons/cg';
 import { Menu, MenuItem, Sidebar } from 'react-pro-sidebar'
@@ -7,10 +7,13 @@ import { useNavigate } from 'react-router-dom'
 import { logout } from './reduxData/User/userSlice';
 import { catch_error_handler } from './Database/firebasefunctions';
 import { start_loading, stop_loading } from './reduxData/Loader/loaderSlice';
+import AddUser from './Modals/AddUser';
 
 const SideBar = () => {
     const dispatch = useDispatch();
     const navigate = useNavigate();
+    const [isShow,setIsShow] = useState(false);
+
     const handleLogout = () => {
         dispatch(start_loading());
         try {
@@ -23,10 +26,11 @@ const SideBar = () => {
     };
 
     return (
-        <Sidebar className='fixed-sidebar' width={5} style={{ backgroundColor: 'rgb(249 249 249 / 0%)' }}>
+       <div>
+         <Sidebar className='fixed-sidebar' width={5} style={{ backgroundColor: 'rgb(249 249 249 / 0%)' }}>
             <Menu style={{ backgroundColor: 'rgb(249 249 249 / 0%)' }} >
                 <MenuItem className='text-center'>
-                    <button type='button' className='btn btn-light'>
+                    <button type='button' className='btn btn-light' onClick={() => setIsShow(!isShow)}>
                         Add Chat <BiPlus color='blue' />
                     </button>
                 </MenuItem>
@@ -35,6 +39,8 @@ const SideBar = () => {
                 <MenuItem onClick={handleLogout} className='text-center'><BiLogOut size={26} /></MenuItem>
             </Menu>
         </Sidebar>
+        <AddUser show={isShow} handleClose={() => setIsShow(false)} />
+       </div>
     )
 }
 

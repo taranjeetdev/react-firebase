@@ -9,6 +9,7 @@ import { doc, getDoc, setDoc } from 'firebase/firestore';
 import { login } from '../reduxData/User/userSlice';
 import { useDispatch, useSelector } from 'react-redux';
 import Imglogo from '../Images/speech-bubble.png';
+import { FaEye, FaEyeSlash } from 'react-icons/fa6';
 
 const Login = () => {
     const [formdata, setFormdata] = useState({
@@ -22,6 +23,7 @@ const Login = () => {
     const isLoader = useSelector((state) => state.loader.isLoading);
     const dispatch = useDispatch();
     let emailregex = /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/;
+    const [isShow, setIsShow] = useState(false);
 
     const [width, setWidth] = useState(window.innerWidth);
     const handleSize = () => {
@@ -123,12 +125,33 @@ const Login = () => {
                             <div className='form-group col-12'>
                                 <label className='input-labels'>Password</label>
                                 <input
-                                    type='text'
+                                    type={isShow ? 'text' : 'password'}
                                     className='form-control'
                                     name='password'
                                     value={formdata?.password}
                                     onChange={handleChange}
                                 />
+                                {
+                                    isShow
+                                        ?
+                                        <FaEyeSlash
+                                            style={{
+                                                position: 'absolute',
+                                                left: '57%',
+                                                top: '44.5%'
+                                            }}
+                                            onClick={() => setIsShow(!isShow)}
+                                        />
+                                        :
+                                        <FaEye
+                                            style={{
+                                                position: 'absolute',
+                                                left: '57%',
+                                                top: '44.5%'
+                                            }}
+                                            onClick={() => setIsShow(!isShow)}
+                                        />
+                                }
                                 {errors?.password && <span className='text-danger'>{errors?.password}</span>}
                             </div>
                             <button type='submit' className='btn btn-info w-100 mt-2'>

@@ -10,9 +10,13 @@ const UserProfile = () => {
             <div className='container'>
                 <div className='form-group'>
                     <div className='row'>
-                        <label><BiUser size={20} /> Name</label>
+                        <label>
+                            <BiUser size={20} /> 
+                            Name
+                        </label>
                     </div>
-                    <span>{user?.username}</span> <span><MdEdit size={15}/></span>
+                    <span>{user?.username}</span> 
+                    <span><MdEdit size={15}/></span>
                 </div>
                 <div className='form-group'>
                     <div className='row'>
