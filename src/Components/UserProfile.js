@@ -6,7 +6,7 @@ import { useSelector } from 'react-redux';
 const UserProfile = () => {
     const user = useSelector((state) => state.auth.user);
     return (
-        <div>
+        <div className='pt-4'>
             <div className='container'>
                 <div className='form-group'>
                     <div className='row'>

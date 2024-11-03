@@ -16,6 +16,7 @@ import UserProfile from "./Components/UserProfile";
 import ChatHome from "./Components/Chats/ChatHome";
 import { useSelector } from "react-redux";
 import LoadingSpinner from "./LoadingSpinner";
+import ChatDetail from './Components/Chats/ChatDetail';
 
 function App() {
   const user = useSelector((state) => state.auth.user);
@@ -24,6 +25,7 @@ function App() {
     { path: "/", element: <ChatHome/> },
     { path: "/profile", element: <UserProfile /> },
     { path: "/settings", element: <Setting /> },
+    { path: "/chat/:id", element: <ChatDetail />},
     { path: "*", element: <Navigate to="/" replace /> },
   ]);
   
