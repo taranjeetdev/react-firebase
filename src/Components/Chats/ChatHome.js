@@ -1,11 +1,51 @@
-import React from 'react'
+import { collection, getDocs } from 'firebase/firestore';
+import React, { useEffect, useState } from 'react'
+import { db } from '../../Database/firebase';
+import { connect, useDispatch } from 'react-redux';
+import { BsThreeDots } from 'react-icons/bs';
+import { start_loading, stop_loading } from "../../reduxData/Loader/loaderSlice";
+import { useNavigate } from 'react-router-dom';
 
-const ChatHome = () => {
+const ChatHome = ({ user }) => {
+  const [allChats, setAllChats] = useState([]);
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    const getUsers = async () => {
+      dispatch(start_loading());
+      try {
+        const dataRef = collection(db, 'users', user._id, 'chatusers');
+        const data = await getDocs(dataRef);
+        setAllChats(data.docs.map((doc) => ({ id: doc.id, ...doc.data() }))); 
+      } catch (error) {
+        console.log(error);
+      } finally {
+        dispatch(stop_loading());
+    }
+    };
+    getUsers();
+  }, []);
+
   return (
     <div className='pt-4'>
-      <h5>Chat Home Component</h5>
+      {allChats.map((item, index) => (
+        <div className="chat-box" key={index} onClick={() => navigate(`/chat/${item?.id}`)}> 
+          <div className="d-flex flex-column">
+          <span>{item.username}</span>
+          <span className="fw-bold">{item.email}</span>
+          </div>
+          <span className="pt-2" ><BsThreeDots color='blue' /> </span>
+        </div>
+      ))}
     </div>
   )
 }
 
-export default ChatHome
+const mapStateToProps = (state) => {
+  return {
+    user: state.auth.user,
+  }
+};
+
+export default connect(mapStateToProps)(ChatHome);
