@@ -9,7 +9,7 @@ import { catch_error_handler } from './Database/firebasefunctions';
 import { start_loading, stop_loading } from './reduxData/Loader/loaderSlice';
 import AddUser from './Modals/AddUser';
 
-const SideBar = () => {
+const SideBar = ({isMobile}) => {
     const dispatch = useDispatch();
     const navigate = useNavigate();
     const [isShow,setIsShow] = useState(false);
@@ -31,12 +31,12 @@ const SideBar = () => {
             <Menu style={{ backgroundColor: 'rgb(249 249 249 / 0%)' }} >
                 <MenuItem className='text-center'>
                     <button type='button' className='btn btn-light' onClick={() => setIsShow(!isShow)}>
-                        Add Chat <BiPlus color='blue' />
+                      {isMobile ? '' : 'Add Chat'} <BiPlus color='blue' />
                     </button>
                 </MenuItem>
-                <MenuItem onClick={() => navigate('/')} className='text-center'> <BiChat /> Chats</MenuItem>
-                <MenuItem onClick={() => navigate('/profile')} className='text-center'><CgProfile /> Profile</MenuItem>
-                <MenuItem onClick={handleLogout} className='text-center'><BiLogOut size={26} /></MenuItem>
+                <MenuItem onClick={() => navigate('/')} className='text-center'> <BiChat /> {isMobile ? '' : 'Chats'}</MenuItem>
+                <MenuItem onClick={() => navigate('/profile')} className='text-center'><CgProfile /> {isMobile ? '' : 'Profile'}</MenuItem>
+                <MenuItem onClick={handleLogout} className='text-center'><BiLogOut size={18} /></MenuItem>
             </Menu>
         </Sidebar>
         <AddUser show={isShow} handleClose={() => setIsShow(false)} />
