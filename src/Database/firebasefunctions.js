@@ -1,6 +1,6 @@
 import { createUserWithEmailAndPassword, signInWithEmailAndPassword } from "firebase/auth";
 import { db, auth } from "./firebase";
-import { addDoc, collection, doc, getDoc, setDoc } from 'firebase/firestore';
+import { addDoc, collection, doc, getDoc, getDocs, setDoc } from 'firebase/firestore';
 import { toast } from "react-toastify";
 import { start_loading, stop_loading } from "../reduxData/Loader/loaderSlice";
 import { login } from "../reduxData/User/userSlice";
@@ -52,7 +52,6 @@ export const start_chat_with_new_user = async (newdata, user, dispatch) => {
         const getSubData = await getDoc(subRef);
         if (getSubData.exists()) return;
 
-        console.log("hittttt")
         await setDoc(subRef, newdata);
         return true;
     } catch (error) {
@@ -65,9 +64,23 @@ export const start_chat_with_new_user = async (newdata, user, dispatch) => {
 export const get_chat_user_detail = async (userid, chatid, dispatch) => {
     dispatch(start_loading());
     try {
-        const docRef = doc(db, 'users',userid, 'chatusers', chatid);
+        const docRef = doc(db, 'users', userid, 'chatusers', chatid);
         const chatdata = await getDoc(docRef);
         return chatdata.data();
+    } catch (error) {
+        catch_error_handler(error);
+    } finally {
+        dispatch(stop_loading());
+    }
+};
+
+export const get_my_chat_users = async (userid, dispatch) => {
+    dispatch(start_loading());
+    try {
+        const docRef = collection(db, 'users', userid, 'chatusers');
+        const docsData = await getDocs(docRef);
+        const list = docsData.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+        return list;
     } catch (error) {
         catch_error_handler(error);
     } finally {

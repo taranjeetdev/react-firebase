@@ -17,6 +17,7 @@ import ChatHome from "./Components/Chats/ChatHome";
 import { useSelector } from "react-redux";
 import LoadingSpinner from "./LoadingSpinner";
 import ChatDetail from './Components/Chats/ChatDetail';
+import { useEffect, useState } from "react";
 
 function App() {
   const user = useSelector((state) => state.auth.user);
@@ -36,6 +37,20 @@ function App() {
     { path: "*", element: <Navigate to="/" replace /> }
   ]);
 
+  const [width, setWidth] = useState(window.innerWidth);
+    const handleSize = () => {
+        setWidth(window.innerWidth);
+    };
+
+    useEffect(() => {
+        window.addEventListener("resize", handleSize);
+        return () => {
+            window.addEventListener("resize", handleSize);
+        }
+    }, []);
+
+    const isMobile = width <= 917;
+
   return <BrowserRouter>
     <ToastContainer />
     <LoadingSpinner />
@@ -45,7 +60,7 @@ function App() {
         <div className="container-fluid">
           <div className="row">
             <div className="col-2 col-md-2 col-lg-2 p-0">
-              <SideBar />
+              <SideBar isMobile={isMobile} />
             </div>
             <div className="col-10 col-md-10 col-lg-10 main-content">
               <AfterLoginRoutes />
