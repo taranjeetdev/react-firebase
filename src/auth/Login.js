@@ -11,7 +11,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import Imglogo from '../Images/speech-bubble.png';
 import { FaEye, FaEyeSlash } from 'react-icons/fa6';
 
-const Login = () => {
+const Login = ({isMobile}) => {
     const [formdata, setFormdata] = useState({
         email: '',
         password: ''
@@ -25,19 +25,19 @@ const Login = () => {
     let emailregex = /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/;
     const [isShow, setIsShow] = useState(false);
 
-    const [width, setWidth] = useState(window.innerWidth);
-    const handleSize = () => {
-        setWidth(window.innerWidth);
-    };
+    // const [width, setWidth] = useState(window.innerWidth);
+    // const handleSize = () => {
+    //     setWidth(window.innerWidth);
+    // };
 
-    useEffect(() => {
-        window.addEventListener("resize", handleSize);
-        return () => {
-            window.addEventListener("resize", handleSize);
-        }
-    }, []);
+    // useEffect(() => {
+    //     window.addEventListener("resize", handleSize);
+    //     return () => {
+    //         window.addEventListener("resize", handleSize);
+    //     }
+    // }, []);
 
-    const isMobile = width <= 917;
+    // const isMobile = width <= 917;
 
     const handleChange = (e) => {
         const { name, value } = e.target;
@@ -106,7 +106,7 @@ const Login = () => {
                 /> <span className='login-text'>Web Chat</span>
             </div>
 
-            <div className='row justify-content-center w-100'>
+            <div className={isMobile ? 'row justify-content-center' : 'row justify-content-center w-100'}>
                 <div className='login-part col-lg-6 col-md-6'>
                     <span className='d-block text-center login-heading'>Login in to continue to Web Chat.</span>
                     <div className='d-flex justify-content-center'>
@@ -124,34 +124,14 @@ const Login = () => {
                             </div>
                             <div className='form-group col-12'>
                                 <label className='input-labels'>Password</label>
-                                <input
-                                    type={isShow ? 'text' : 'password'}
-                                    className='form-control'
-                                    name='password'
-                                    value={formdata?.password}
-                                    onChange={handleChange}
-                                />
-                                {
-                                    isShow
-                                        ?
-                                        <FaEyeSlash
-                                            style={{
-                                                position: 'absolute',
-                                                left: '57%',
-                                                top: '44.5%'
-                                            }}
-                                            onClick={() => setIsShow(!isShow)}
-                                        />
-                                        :
-                                        <FaEye
-                                            style={{
-                                                position: 'absolute',
-                                                left: '57%',
-                                                top: '44.5%'
-                                            }}
-                                            onClick={() => setIsShow(!isShow)}
-                                        />
-                                }
+                                <div style={{ position: 'relative' }}>
+                                    <input type={isShow ? 'text' : 'password'} className="form-control" name="password" value={formdata?.password} onChange={handleChange} />
+                                    {isShow ? (
+                                        <FaEyeSlash style={{ position: 'absolute', right: '10px', top: '50%', transform: 'translateY(-50%)', cursor: 'pointer' }} onClick={() => setIsShow(!isShow)} />
+                                    ) : (
+                                        <FaEye style={{ position: 'absolute', right: '10px', top: '50%', transform: 'translateY(-50%)', cursor: 'pointer' }} onClick={() => setIsShow(!isShow)} />
+                                    )}
+                                </div>
                                 {errors?.password && <span className='text-danger'>{errors?.password}</span>}
                             </div>
                             <button type='submit' className='btn btn-info w-100 mt-2'>

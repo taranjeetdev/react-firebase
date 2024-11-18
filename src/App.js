@@ -21,22 +21,6 @@ import { useEffect, useState } from "react";
 
 function App() {
   const user = useSelector((state) => state.auth.user);
-
-  const AfterLoginRoutes = () => useRoutes([
-    { path: "/", element: <ChatHome/> },
-    { path: "/profile", element: <UserProfile /> },
-    { path: "/settings", element: <Setting /> },
-    { path: "/chat/:id", element: <ChatDetail />},
-    { path: "*", element: <Navigate to="/" replace /> },
-  ]);
-  
-  const BeforeLoginRoutes = () => useRoutes([
-    { path: "/", element: <Home /> },
-    { path: "/login", element: <Login /> },
-    { path: "/signup", element: <Signup /> },
-    { path: "*", element: <Navigate to="/" replace /> }
-  ]);
-
   const [width, setWidth] = useState(window.innerWidth);
     const handleSize = () => {
         setWidth(window.innerWidth);
@@ -50,6 +34,21 @@ function App() {
     }, []);
 
     const isMobile = width <= 917;
+
+  const AfterLoginRoutes = () => useRoutes([
+    { path: "/", element: <ChatHome/> },
+    { path: "/profile", element: <UserProfile /> },
+    { path: "/settings", element: <Setting /> },
+    { path: "/chat/:id", element: <ChatDetail />},
+    { path: "*", element: <Navigate to="/" replace /> },
+  ]);
+  
+  const BeforeLoginRoutes = () => useRoutes([
+    { path: "/", element: <Home /> },
+    { path: "/login", element: <Login isMobile={isMobile} /> },
+    { path: "/signup", element: <Signup isMobile={isMobile} /> },
+    { path: "*", element: <Navigate to="/" replace /> }
+  ]);
 
   return <BrowserRouter>
     <ToastContainer />
